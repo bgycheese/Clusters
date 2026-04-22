@@ -1,0 +1,36 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <list>
+          <option value="attr" />
+          <option value="ConfigParser" />
+          <option value="cryptography" />
+          <option value="docutils" />
+          <option value="filelock" />
+          <option value="HTMLParser" />
+          <option value="ipython" />
+          <option value="ipywidgets" />
+          <option value="jnius" />
+          <option value="keyring" />
+          <option value="protobuf" />
+          <option value="pyOpenSSL" />
+          <option value="redis" />
+          <option value="Sphinx" />
+          <option value="thread" />
+          <option value="typing_extensions" />
+          <option value="urllib3_secure_extra" />
+          <option value="xmlrpclib" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredIdentifiers">
+        <list>
+          <option value="str.*" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
