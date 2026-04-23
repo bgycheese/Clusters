@@ -1,12 +1,15 @@
 import numpy as np
 import os, json
 from sentence_transformers import SentenceTransformer
+from dotenv import load_dotenv, dotenv_values
 # device mps is for MacOS, cuda = GPU, and device=cpu
 # can remove the token afterwards
-os.environ["HF_TOKEN"] = str(input("Your HF TOKEN for faster download/upload: "))
+load_dotenv()
+hf_token = os.getenv("HF_TOKEN")
+if not hf_token:
+    print("You can set your HF_TOKEN environment for higher download speed")
 
 model_1 = SentenceTransformer('markusbayer/CySecBERT', device='mps')
-
 # BEST for a laptop specification
 BATCH_SIZE = 16
 
