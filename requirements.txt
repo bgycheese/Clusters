@@ -1,7 +1,7 @@
 annotated-doc==0.0.4
 anyio==4.13.0
 certifi==2026.2.25
-click==8.3.2
+click==8.3.3
 filelock==3.29.0
 fsspec==2026.3.0
 h11==0.16.0
@@ -42,4 +42,5 @@ transformers==5.5.4
 typer==0.24.1
 typing_extensions==4.15.0
 umap-learn==0.5.12
-hdbscan
+hdbscan==0.8.42
+matplotlib==3.10.8
