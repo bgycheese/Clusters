@@ -1,5 +1,7 @@
 # Clustering Process
 
-## Embeddings Generation
 
+
+## Embeddings Generation
+-------------------------
 - Installing `markusbayer/CySecBERT` through SentenceTransformers from the `sentence-trnasformers` library
