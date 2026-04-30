@@ -44,3 +44,6 @@ typing_extensions==4.15.0
 umap-learn==0.5.12
 hdbscan==0.8.42
 matplotlib==3.10.8
+python-dotenv
+pandas
+rapidfuzz

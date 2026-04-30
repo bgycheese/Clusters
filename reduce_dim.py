@@ -66,12 +66,14 @@ visualized_2d = umap.UMAP(
     n_components=2,
     n_neighbors=n_neighbors,
     min_dist=0.1,
-    metric="cosine",
     n_epochs=500,
+    metric="cosine",
     random_state=42
 ).fit_transform(embeddings)
 
 print(f"UMAP 2D done. New shape: {visualized_2d.shape}")
+np.save("./output/clusters/umap_2d_coords.npy", visualized_2d)
+print("Saved umap_2d_coords.npy")
 
 fig2 = plt.figure(figsize=(12, 8))
 plt.scatter(visualized_2d[:,0], visualized_2d[:,1], c=colors, s=20, alpha=0.7)
