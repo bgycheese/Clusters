@@ -44,7 +44,6 @@ htmlcov/
 *.log
 
 # Generated thesis outputs and large derived data
-output/
 *.npy
 *.npz
 *.pkl
