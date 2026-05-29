@@ -49,3 +49,4 @@ htmlcov/
 *.pkl
 *.pickle
 *.joblib
+output*/

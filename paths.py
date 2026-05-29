@@ -1,7 +1,7 @@
 from pathlib import Path
 
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
+PROJECT_ROOT = Path(__file__).resolve().parents[0]
 OUTPUT_DIR = PROJECT_ROOT / "output"
 PHASE1_OUTPUT_DIR = PROJECT_ROOT.parent / "OpenScap_Dataset_RHEL9" / "output"
 

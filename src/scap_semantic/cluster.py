@@ -1,11 +1,11 @@
 import json
 from collections import defaultdict
-
 import numpy as np
 from sklearn.metrics import adjusted_rand_score, silhouette_samples, silhouette_score
+# from scipy.spatial.distance import euclidean
 
 try:
-    from .paths import (
+    from paths import (
         CLUSTER_RESULTS_FILE,
         CLUSTER_SUMMARY_FILE,
         CONDENSED_TREE_PLOT,
@@ -39,7 +39,7 @@ def write_json(path, data) -> None:
         json.dump(data, file, indent=2)
 
 
-def run_clustering(data, min_cluster_size=18, min_samples=14):
+def run_clustering(data, min_cluster_size=10, min_samples=5):
     import hdbscan
 
     clusterer = hdbscan.HDBSCAN(
@@ -68,6 +68,8 @@ def _silhouette_details(labels, data):
 
 
 def cluster_evaluation(labels=None, data=None, y_true_path=Y_TRUE_FILE):
+
+
     if data is None:
         data = np.load(REDUCED_FILE)
     if labels is None:
@@ -78,11 +80,12 @@ def cluster_evaluation(labels=None, data=None, y_true_path=Y_TRUE_FILE):
     print(f"{n_clusters} clusters and {n_noise} noise points.")
 
     sil_avg, sil_vals, _, unique_clusters = _silhouette_details(labels, data)
-    if sil_vals.size:
-        lowest_score = int(np.argmin(sil_vals))
-        print(lowest_score, sil_vals.shape)
+
+    # if sil_vals.size:
+    #     lowest_score = int(np.argmin(sil_vals))
     print(f"Silhouette Score: {sil_avg:.4f}")
 
+    # score = DBCV(data, labels, distance="euclidean")
     ari = None
     if y_true_path.exists():
         y_true = np.load(y_true_path)

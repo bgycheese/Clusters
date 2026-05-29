@@ -5,7 +5,7 @@ import numpy as np
 from numpy.linalg import norm
 
 try:
-    from .paths import (
+    from paths import (
         CLUSTER_RESULTS_FILE,
         CLUSTER_SUMMARY_FILE,
         EMBEDDINGS_FILE,

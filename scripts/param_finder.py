@@ -2,12 +2,13 @@ import itertools
 import json
 
 import numpy as np
+from scipy.spatial.distance import euclidean
 from sklearn.metrics import adjusted_rand_score, silhouette_score
 
 try:
-    from .paths import PARAM_SEARCH_FILE, POLICIES_FILE, REDUCED_FILE, RULE_META_FILE, Y_TRUE_FILE, ensure_output_dirs
+    from paths import PARAM_SEARCH_FILE, POLICIES_FILE, REDUCED_FILE, RULE_META_FILE, Y_TRUE_FILE, ensure_output_dirs, EMBEDDINGS_FILE
 except ImportError:
-    from paths import PARAM_SEARCH_FILE, POLICIES_FILE, REDUCED_FILE, RULE_META_FILE, Y_TRUE_FILE, ensure_output_dirs
+    from paths import PARAM_SEARCH_FILE, POLICIES_FILE, REDUCED_FILE, RULE_META_FILE, Y_TRUE_FILE, ensure_output_dirs, EMBEDDINGS_FILE
 
 
 def load_json(path):
@@ -42,7 +43,7 @@ def search_hdbscan_params(data, y_true, min_cluster_sizes=range(10, 30), min_sam
             min_samples=min_samples,
             metric="euclidean",
             approx_min_span_tree=True,
-            gen_min_span_tree=True,
+            gen_min_span_tree=True
         )
         labels = clusterer.fit_predict(data)
 
@@ -56,7 +57,7 @@ def search_hdbscan_params(data, y_true, min_cluster_sizes=range(10, 30), min_sam
         else:
             silhouette = silhouette_score(data[mask], labels[mask], metric="euclidean")
             ari = adjusted_rand_score(y_true, labels)
-
+            # score = calinski_harabasz_score(data, labels) TODO:add this metric perhaps and compare them with ARI and Sil_Score
         results.append(
             {
                 "min_cluster_size": min_cluster_size,
@@ -74,14 +75,43 @@ def search_hdbscan_params(data, y_true, min_cluster_sizes=range(10, 30), min_sam
 
 def main() -> None:
     ensure_output_dirs()
-    data = np.load(REDUCED_FILE)
+    data = np.load(EMBEDDINGS_FILE)
+    # data = np.load(REDUCED_FILE)
     rules = load_json(POLICIES_FILE)
     meta = load_json(RULE_META_FILE)
 
     y_true, unique_groups = build_ground_truth(rules, meta)
     print(f"y_true built: {len(y_true)} labels, {len(unique_groups)} unique groups")
+    dimensions = list(range(10,51))
+    n_neighbors = list(range(15,31))
+    max_ari = -1
+    max_sil = -1
+    for dimension, n_neighbor in itertools.product(dimensions, n_neighbors):
+        import umap
 
-    results = search_hdbscan_params(data, y_true)
+        new_data = umap.UMAP(
+            n_components=dimension,
+            n_neighbors=n_neighbor,
+            min_dist=0.0,
+            random_state=42,
+            metric="euclidean"
+        ).fit_transform(data)
+        print(f"{dimension, n_neighbor} values ", new_data.shape)
+        results = search_hdbscan_params(new_data, y_true)
+        for result in results:
+            if result["silhouette"] and result["ari"] > 0.7:
+                if result["silhouette"] > max_sil or result["ari"] > max_ari:
+                    max_sil = result["silhouette"]
+                    max_ari = result["ari"]
+                    print(
+                        f"mcs={result['min_cluster_size']:>2}  "
+                        f"ms={result['min_samples']:>2}  "
+                        f"clusters={result['n_clusters']:>3}  "
+                        f"noise={result['n_noise']:>3}  "
+                        f"sil={result['silhouette']:.4f}  " 
+                        f"ari={result['ari']:.4f}"
+                    )
+
 
     with PARAM_SEARCH_FILE.open("w") as file:
         json.dump(results, file, indent=2)

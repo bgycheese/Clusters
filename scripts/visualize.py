@@ -1,7 +1,7 @@
 import numpy as np
 
 try:
-    from .paths import LABELS_FILE, UMAP_2D_COORDS_FILE, UMAP_CLUSTERS_PLOT, ensure_output_dirs
+    from paths import LABELS_FILE, UMAP_2D_COORDS_FILE, UMAP_CLUSTERS_PLOT, ensure_output_dirs
 except ImportError:
     from paths import LABELS_FILE, UMAP_2D_COORDS_FILE, UMAP_CLUSTERS_PLOT, ensure_output_dirs
 

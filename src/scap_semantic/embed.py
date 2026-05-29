@@ -1,18 +1,19 @@
 import json
 import os
+import time
 
 import numpy as np
 from dotenv import load_dotenv
 
 try:
-    from .paths import EMBEDDINGS_FILE, POLICIES_FILE, PROJECT_ROOT, RULE_META_FILE, ensure_output_dirs
+    from paths import EMBEDDINGS_FILE, POLICIES_FILE, PROJECT_ROOT, RULE_META_FILE, ensure_output_dirs
 except ImportError:
     from paths import EMBEDDINGS_FILE, POLICIES_FILE, PROJECT_ROOT, RULE_META_FILE, ensure_output_dirs
 
 
-MODEL_NAME = "markusbayer/CySecBERT"
-# MODEL_NAME = "cisco-ai/SecureBERT2.0-biencoder"
-BATCH_SIZE = 16
+# MODEL_NAME = "markusbayer/CySecBERT"
+MODEL_NAME = "cisco-ai/SecureBERT2.0-biencoder"
+BATCH_SIZE = 32
 DEFAULT_DEVICE = "mps"
 
 
@@ -42,7 +43,7 @@ def main() -> None:
     from sentence_transformers import SentenceTransformer
 
     load_dotenv(PROJECT_ROOT / ".env")
-    if not os.getenv("HF_TOKEN"):
+    if "HF_TOKEN" not in os.environ:
         print("You can set your HF_TOKEN for higher download speed")
 
     device = os.getenv("SENTENCE_TRANSFORMERS_DEVICE", DEFAULT_DEVICE)
@@ -52,11 +53,17 @@ def main() -> None:
 
     rules = load_rules()
     texts = build_rule_texts(rules)
+
+    # for batch_size in [16, 32, 64, 128, 256, 512]:
+    #     start_t = time.time()
+    #     model.encode(texts, batch_size=batch_size,show_progress_bar=True)
+    #     duration = time.time() - start_t
+    #     print(
+    #         f"Batch size: {batch_size}, Duration: {duration:.2f} seconds; {len(texts) / duration:.2f} sentences per second")
     embeddings = model.encode(
         texts,
         batch_size=BATCH_SIZE,
-        show_progress_bar=True,
-        prompt="Find semantically similar elements and clusterize them",
+        show_progress_bar=True
     )
     meta = build_rule_meta(rules)
 

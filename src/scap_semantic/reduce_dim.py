@@ -3,7 +3,7 @@ import json
 import numpy as np
 
 try:
-    from .paths import (
+    from paths import (
         EMBEDDINGS_FILE,
         REDUCED_FILE,
         RULE_META_FILE,
@@ -43,8 +43,8 @@ def fit_umap(data, n_components, n_neighbors, metric, min_dist=0.0, n_epochs=500
 
 
 def severity_colors(meta):
-    color_map = {"high": "red", "medium": "orange", "low": "green", "unknown": "grey"}
-    return [color_map.get(rule["severity"], "grey") for rule in meta]
+    color = [i for i, j in enumerate(meta)]
+    return list(color)
 
 
 def save_visualizations(embeddings, meta, n_neighbors) -> None:
@@ -92,24 +92,24 @@ def main() -> None:
 
     n_neighbors = max(2, int(0.01 * embeddings.shape[0]))
 
-    reduced_100 = fit_umap(
+    reduced = fit_umap(
         embeddings,
-        n_components=100,
-        n_neighbors=n_neighbors,
+        n_components=10,
+        n_neighbors=15,
         min_dist=0.0,
         metric="cosine",
     )
-    print(f"UMAP 100D done. New shape: {reduced_100.shape}")
-
-    reduced_10 = fit_umap(
-        reduced_100,
-        n_components=10,
-        n_neighbors=n_neighbors,
-        min_dist=0.0,
-        metric="euclidean",
-    )
-    print(f"UMAP 10D done. New shape: {reduced_10.shape}")
-    np.save(REDUCED_FILE, reduced_10)
+    print(f"UMAP {reduced.shape[1]}D done. New shape: {reduced.shape}")
+    # TODO: See if the seconfd reduction makes sense
+    # reduced_10 = fit_umap(
+    #     reduced_100,
+    #     n_components=10,
+    #     n_neighbors=15,
+    #     min_dist=0.0,
+    #     metric="euclidean"
+    # )
+    # print(f"UMAP 10D done. New shape: {reduced_10.shape}")
+    np.save(REDUCED_FILE, reduced)
     print(f"Saved {REDUCED_FILE}")
 
     meta = load_json(RULE_META_FILE)

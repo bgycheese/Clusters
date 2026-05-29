@@ -12,7 +12,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from src.scap_semantic.cluster import cluster_evaluation
-from src.scap_semantic.paths import LABELS_FILE, REDUCED_FILE, RULE_META_FILE, Y_TRUE_FILE
+from paths import LABELS_FILE, REDUCED_FILE, RULE_META_FILE, Y_TRUE_FILE
 
 
 def load_json(path):
